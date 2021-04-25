@@ -136,17 +136,17 @@ const addRole = () => {
       {
         type: "list",
         message: "What is the department?",
-        choices: [connection.query("SELECT * FROM roles")],
-        name: "role",
+        choices: [connection.query("SELECT * FROM department")],
+        name: "department_id",
       },
     ])
     .then((answers) => {
       connection.query(
-        "INSERT INTO role SET ?",
+        "INSERT INTO roles SET ?",
         {
           title: answers.title,
           salary: answers.salary,
-          department_id: answers.role,
+          department_id: answers.department_id,
         },
         (err, res) => {
           if (err) throw err;
