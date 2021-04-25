@@ -27,7 +27,7 @@ const start = () => {
         "View All Employees By Manager",
         "Add Employee",
         "Remove Employee",
-        "Update Employee Role",
+        "Add Role",
         "Update Employee Manager",
         "View All Roles",
         "View Utilized Budget By Department",
@@ -64,8 +64,8 @@ const start = () => {
           viewRoles();
           break;
 
-        case "Update Employee Role":
-          updateRole();
+        case "Add Role":
+          addRole();
           break;
 
         case "View Utilized Budget By Department":
@@ -118,4 +118,41 @@ const viewRoles = () => {
     console.table(res);
     start();
   });
+};
+
+const addRole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the role you would like to add?",
+        name: "title",
+      },
+      {
+        type: "input",
+        message: "What is the role salary?",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message: "What is the department?",
+        choices: [connection.query("SELECT * FROM roles")],
+        name: "role",
+      },
+    ])
+    .then((answers) => {
+      connection.query(
+        "INSERT INTO role SET ?",
+        {
+          title: answers.title,
+          salary: answers.salary,
+          department_id: answers.role,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          start();
+        }
+      );
+    });
 };
