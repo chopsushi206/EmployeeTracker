@@ -1,0 +1,29 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "Allows user to view, add, & delete employees.",
+  "main": "index.js",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chopsushi206/EmployeeTracker.git"
+  },
+  "keywords": [
+    "employee",
+    "tracker",
+    "CMS"
+  ],
+  "author": "LiHua Anderson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chopsushi206/EmployeeTracker/issues"
+  },
+  "homepage": "https://github.com/chopsushi206/EmployeeTracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.0.0",
+    "mysql2": "^2.2.5"
+  }
+}
