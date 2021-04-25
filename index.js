@@ -35,7 +35,6 @@ const start = () => {
       ],
     })
     .then((answer) => {
-      console.log(answer);
       switch (answer.action) {
         case "View All Employees":
           viewEmployees();
@@ -97,6 +96,24 @@ const viewEmployees = () => {
 const viewDepartments = () => {
   console.log("\nComplete Department List:\n");
   connection.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    start();
+  });
+};
+
+const teamView = () => {
+  console.log("\nComplete Employee List By Manager:\n");
+  connection.query("SELECT * FROM employee WHERE manager_id", (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    start();
+  });
+};
+
+const viewRoles = () => {
+  console.log("\nComplete Role List:\n");
+  connection.query("SELECT * FROM roles", (err, res) => {
     if (err) throw err;
     console.table(res);
     start();
