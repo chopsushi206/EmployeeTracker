@@ -6,4 +6,5 @@ module.exports = {
   addRole: require("./addRole"),
   teamView: require("./teamView"),
   addDepartment: require("./addDepartment"),
+  removeEmployee: require("./removeEmployee"),
 };

@@ -9,6 +9,7 @@ const {
   addRole,
   teamView,
   addDepartment,
+  removeEmployee,
 } = require("./utils");
 
 const connection = mysql.createConnection({
@@ -67,7 +68,7 @@ const start = () => {
           break;
 
         case "Remove Employee":
-          removeEmployee();
+          removeEmployee(connection, start);
           break;
 
         case "Update Employee Manager":
