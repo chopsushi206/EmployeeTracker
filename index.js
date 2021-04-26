@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 require("console.table");
+const { viewEmployees, viewDepartments } = require("./utils");
 
 const departmentList = [];
 const roleList = [];
@@ -41,11 +42,11 @@ const start = () => {
     .then((answer) => {
       switch (answer.action) {
         case "View All Employees":
-          viewEmployees();
+          viewEmployees(connection, start);
           break;
 
         case "View All Departments":
-          viewDepartments();
+          viewDepartments(connection, start);
           break;
 
         case "View All Employees By Manager":
@@ -86,24 +87,6 @@ const start = () => {
           break;
       }
     });
-};
-
-const viewEmployees = () => {
-  console.log("\nComplete Employee List:\n");
-  connection.query("SELECT * FROM employee", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
-};
-
-const viewDepartments = () => {
-  console.log("\nComplete Department List:\n");
-  connection.query("SELECT * FROM department", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
 };
 
 const addEmployee = () => {
@@ -183,11 +166,14 @@ const teamView = () => {
 
 const viewRoles = () => {
   console.log("\nComplete Role List:\n");
-  connection.query("SELECT * FROM roles", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
+  connection.query(
+    "SELECT roles.id, roles.title, department.name AS department, roles.salary FROM roles LEFT JOIN department ON roles.department_id = department.id",
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+      start();
+    }
+  );
 };
 
 const addRole = () => {

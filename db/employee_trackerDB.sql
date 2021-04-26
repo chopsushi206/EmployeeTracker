@@ -15,6 +15,8 @@ id INTEGER NOT NULL AUTO_INCREMENT,
 title VARCHAR(30) NOT NULL,
 salary DECIMAL(10),
 department_id INTEGER NOT NULL,
+INDEX department_index(department_id),
+CONSTRAINT fk_department FOREIGN KEY(department_id) REFERENCES department(id) ON DELETE CASCADE,
 PRIMARY KEY(id)
 );
 
@@ -24,6 +26,10 @@ first_name VARCHAR(30) NOT NULL,
 last_name VARCHAR(30) NOT NULL,
 role_id INTEGER NOT NULL,
 manager_id INTEGER,
+INDEX role_index(role_id),
+CONSTRAINT fk_role FOREIGN KEY(role_id) REFERENCES role(id) ON DELETE CASCADE,
+INDEX manager_index(manager_id),
+CONSTRAINT fk_manager FOREIGN KEY(manager_id) REFERENCES employee(id) ON DELETE SET NULL,
 PRIMARY KEY(id)
 );
 
