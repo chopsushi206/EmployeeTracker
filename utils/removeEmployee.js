@@ -17,7 +17,7 @@ const removeEmployee = (connection, start) => {
     .prompt([
       {
         type: "list",
-        message: "What is the employee's position?",
+        message: "Which employee would you like to remove?",
         choices: employeeList,
         name: "choice",
       },
