@@ -121,25 +121,32 @@ const viewRoles = () => {
 };
 
 const addRole = () => {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is the role you would like to add?",
-        name: "title",
-      },
-      {
-        type: "input",
-        message: "What is the role salary?",
-        name: "salary",
-      },
-      {
-        type: "list",
-        message: "What is the department?",
-        choices: [connection.query("SELECT * FROM department")],
-        name: "department_id",
-      },
-    ])
+  connection
+    .query("SELECT * FROM department", (err, res) => {
+      if (err) throw err;
+      roleList = res;
+      console.log(roleList);
+    })
+    .then(
+      inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the role you would like to add?",
+          name: "title",
+        },
+        {
+          type: "input",
+          message: "What is the role salary?",
+          name: "salary",
+        },
+        {
+          type: "list",
+          message: "What is the department?",
+          choices: roleList,
+          name: "department_id",
+        },
+      ])
+    )
     .then((answers) => {
       connection.query(
         "INSERT INTO roles SET ?",
