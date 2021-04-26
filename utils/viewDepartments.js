@@ -1,4 +1,4 @@
-const viewDepartments = () => {
+const viewDepartments = (connection, start) => {
   console.log("\nComplete Department List:\n");
   connection.query("SELECT * FROM department", (err, res) => {
     if (err) throw err;

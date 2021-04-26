@@ -1,11 +1,14 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 require("console.table");
-const { viewEmployees, viewDepartments } = require("./utils");
-
-const departmentList = [];
-const roleList = [];
-const managerList = [];
+const {
+  viewEmployees,
+  viewDepartments,
+  addEmployee,
+  viewRoles,
+  addRole,
+  teamView,
+} = require("./utils");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -50,11 +53,11 @@ const start = () => {
           break;
 
         case "View All Employees By Manager":
-          teamView();
+          teamView(connection, start);
           break;
 
         case "Add Employee":
-          addEmployee();
+          addEmployee(connection, start);
           break;
 
         case "Remove Employee":
@@ -66,11 +69,11 @@ const start = () => {
           break;
 
         case "View All Roles":
-          viewRoles();
+          viewRoles(connection, start);
           break;
 
         case "Add Role":
-          addRole();
+          addRole(connection, start);
           break;
 
         case "View Utilized Budget By Department":
@@ -86,140 +89,5 @@ const start = () => {
           console.log(`Invalid action: ${answer.action}`);
           break;
       }
-    });
-};
-
-const addEmployee = () => {
-  connection.query("SELECT * FROM roles", (err, res) => {
-    if (err) throw err;
-    res.forEach((object) => {
-      let role = {
-        name: object.title,
-        value: object.id,
-      };
-      roleList.push(role);
-    });
-  });
-
-  connection.query("SELECT * FROM employee", (err, res) => {
-    if (err) throw err;
-    res.forEach((object) => {
-      let manager = {
-        name: object.manager_id,
-        value: object.manager_id,
-      };
-      managerList.push(manager);
-    });
-  });
-
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is the first name of the new employee?",
-        name: "first_Name",
-      },
-      {
-        type: "input",
-        message: "What is the last name of the new employee?",
-        name: "last_Name",
-      },
-      {
-        type: "list",
-        message: "What is the employee's position?",
-        choices: roleList,
-        name: "role_id",
-      },
-      {
-        type: "list",
-        message: "Who is the employee's manager?",
-        choices: managerList,
-        name: "manager_id",
-      },
-    ])
-    .then((answers) => {
-      connection.query(
-        "INSERT INTO employee SET ?",
-        {
-          first_name: answers.first_Name,
-          last_name: answers.last_Name,
-          role_id: answers.role_id,
-          manager_id: answers.manager,
-        },
-        (err, res) => {
-          if (err) throw err;
-          console.table(res);
-          start();
-        }
-      );
-    });
-};
-
-const teamView = () => {
-  console.log("\nComplete Employee List By Manager:\n");
-  connection.query("SELECT * FROM employee WHERE manager_id", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    start();
-  });
-};
-
-const viewRoles = () => {
-  console.log("\nComplete Role List:\n");
-  connection.query(
-    "SELECT roles.id, roles.title, department.name AS department, roles.salary FROM roles LEFT JOIN department ON roles.department_id = department.id",
-    (err, res) => {
-      if (err) throw err;
-      console.table(res);
-      start();
-    }
-  );
-};
-
-const addRole = () => {
-  connection.query("SELECT * FROM department", (err, res) => {
-    if (err) throw err;
-    res.forEach((object) => {
-      let department = {
-        name: object.name,
-        value: object.id,
-      };
-      departmentList.push(department);
-    });
-  });
-
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is the role you would like to add?",
-        name: "title",
-      },
-      {
-        type: "input",
-        message: "What is the role salary?",
-        name: "salary",
-      },
-      {
-        type: "list",
-        message: "What is the department?",
-        choices: departmentList,
-        name: "department_id",
-      },
-    ])
-    .then((answers) => {
-      connection.query(
-        "INSERT INTO roles SET ?",
-        {
-          title: answers.title,
-          salary: answers.salary,
-          department_id: answers.department_id,
-        },
-        (err, res) => {
-          if (err) throw err;
-          console.table(res);
-          start();
-        }
-      );
     });
 };
