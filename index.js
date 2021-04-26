@@ -1,8 +1,10 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
-const consoleTable = require("console.table");
+require("console.table");
 
+const departmentList = [];
 const roleList = [];
+const managerList = [];
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -29,9 +31,9 @@ const start = () => {
         "View All Employees By Manager",
         "Add Employee",
         "Remove Employee",
-        "Add Role",
         "Update Employee Manager",
         "View All Roles",
+        "Add Role",
         "View Utilized Budget By Department",
         "Exit",
       ],
@@ -104,6 +106,72 @@ const viewDepartments = () => {
   });
 };
 
+const addEmployee = () => {
+  connection.query("SELECT * FROM roles", (err, res) => {
+    if (err) throw err;
+    res.forEach((object) => {
+      let role = {
+        name: object.title,
+        value: object.id,
+      };
+      roleList.push(role);
+    });
+  });
+
+  connection.query("SELECT * FROM employee", (err, res) => {
+    if (err) throw err;
+    res.forEach((object) => {
+      let manager = {
+        name: object.manager_id,
+        value: object.manager_id,
+      };
+      managerList.push(manager);
+    });
+  });
+
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the first name of the new employee?",
+        name: "first_Name",
+      },
+      {
+        type: "input",
+        message: "What is the last name of the new employee?",
+        name: "last_Name",
+      },
+      {
+        type: "list",
+        message: "What is the employee's position?",
+        choices: roleList,
+        name: "role_id",
+      },
+      {
+        type: "list",
+        message: "Who is the employee's manager?",
+        choices: managerList,
+        name: "manager_id",
+      },
+    ])
+    .then((answers) => {
+      connection.query(
+        "INSERT INTO employee SET ?",
+        {
+          first_name: answers.first_Name,
+          last_name: answers.last_Name,
+          role_id: answers.role_id,
+          manager_id: answers.manager,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          start();
+        }
+      );
+    });
+};
+
 const teamView = () => {
   console.log("\nComplete Employee List By Manager:\n");
   connection.query("SELECT * FROM employee WHERE manager_id", (err, res) => {
@@ -130,9 +198,8 @@ const addRole = () => {
         name: object.name,
         value: object.id,
       };
-      roleList.push(department);
+      departmentList.push(department);
     });
-    console.log(roleList);
   });
 
   inquirer
@@ -150,7 +217,7 @@ const addRole = () => {
       {
         type: "list",
         message: "What is the department?",
-        choices: roleList,
+        choices: departmentList,
         name: "department_id",
       },
     ])
@@ -160,7 +227,6 @@ const addRole = () => {
         {
           title: answers.title,
           salary: answers.salary,
-          //NOW selecting the Sales option will make answers.department_id be 1!
           department_id: answers.department_id,
         },
         (err, res) => {
