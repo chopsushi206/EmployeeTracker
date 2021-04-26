@@ -2,6 +2,8 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const consoleTable = require("console.table");
 
+const roleList = [];
+
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -121,38 +123,44 @@ const viewRoles = () => {
 };
 
 const addRole = () => {
-  connection
-    .query("SELECT * FROM department", (err, res) => {
-      if (err) throw err;
-      roleList = res;
-      console.log(roleList);
-    })
-    .then(
-      inquirer.prompt([
-        {
-          type: "input",
-          message: "What is the role you would like to add?",
-          name: "title",
-        },
-        {
-          type: "input",
-          message: "What is the role salary?",
-          name: "salary",
-        },
-        {
-          type: "list",
-          message: "What is the department?",
-          choices: roleList,
-          name: "department_id",
-        },
-      ])
-    )
+  connection.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+    res.forEach((object) => {
+      let department = {
+        name: object.name,
+        value: object.id,
+      };
+      roleList.push(department);
+    });
+    console.log(roleList);
+  });
+
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the role you would like to add?",
+        name: "title",
+      },
+      {
+        type: "input",
+        message: "What is the role salary?",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message: "What is the department?",
+        choices: roleList,
+        name: "department_id",
+      },
+    ])
     .then((answers) => {
       connection.query(
         "INSERT INTO roles SET ?",
         {
           title: answers.title,
           salary: answers.salary,
+          //NOW selecting the Sales option will make answers.department_id be 1!
           department_id: answers.department_id,
         },
         (err, res) => {
