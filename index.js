@@ -8,6 +8,7 @@ const {
   viewRoles,
   addRole,
   teamView,
+  addDepartment,
 } = require("./utils");
 
 const connection = mysql.createConnection({
@@ -33,6 +34,7 @@ const start = () => {
         "View All Employees",
         "View All Departments",
         "View All Employees By Manager",
+        "Add Department",
         "Add Employee",
         "Remove Employee",
         "Update Employee Manager",
@@ -54,6 +56,10 @@ const start = () => {
 
         case "View All Employees By Manager":
           teamView(connection, start);
+          break;
+
+        case "Add Department":
+          addDepartment(connection, start);
           break;
 
         case "Add Employee":
@@ -81,7 +87,7 @@ const start = () => {
           break;
 
         case "Exit":
-          console.log("Thank you, Goodbye");
+          console.log("\nThank you, Goodbye\n");
           connection.end();
           break;
 

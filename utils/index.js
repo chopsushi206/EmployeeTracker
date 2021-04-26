@@ -5,4 +5,5 @@ module.exports = {
   viewRoles: require("./viewRoles"),
   addRole: require("./addRole"),
   teamView: require("./teamView"),
+  addDepartment: require("./addDepartment"),
 };
