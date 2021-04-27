@@ -10,6 +10,7 @@ const removeEmployee = (connection, start) => {
         value: object.id,
       };
       employeeList.push(employee);
+      console.log(employeeList);
     });
   });
 

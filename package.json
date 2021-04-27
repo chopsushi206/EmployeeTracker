@@ -4,6 +4,7 @@
   "description": "Allows user to view, add, & delete employees.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "none"
   },
   "repository": {
